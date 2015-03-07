@@ -29,5 +29,4 @@ class fw_index extends fw_define{
         }
     }
 
-    
 }

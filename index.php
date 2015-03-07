@@ -16,12 +16,16 @@ class fw_define{
     public $define_theme  = "default";
 
     // default-plugin
-    public $sample = "sample";
+    public $sample = "config";
 
     // default-file(.php | .html)
     public $index = "index";
 
+    function getPath($plugins,$library){
 
+        return $this->{$plugins}."/".$this->{$library};
+
+    }
 
     /**
      * Module-set
@@ -110,7 +114,8 @@ class fw_define{
 
         //指定pluginの表示htmlファイル-表示
         $libView = new libView();
-        $libView->viewContents($fw_plugin_index);
+        //$libView->viewContents($fw_plugin_index);
+        echo $libView->viewContents($fw_plugin_index);
     }
 
     /**
@@ -136,6 +141,12 @@ class fw_root extends fw_define{
         //指定pluginの読み込み
         $fw_index = new fw_index();
         $fw_index->loadModule($_REQUEST['plugins']);
+
+        //表示前処理
+        $start_php = $this->define_plugins."/".$_REQUEST['plugins']."/php/".$this->index.".php";
+        if(is_file($start_php)){
+            require_once $start_php;
+        }
 
         //指定pluginの表示
         $this->fw_pluginView($_REQUEST['plugins'],$_REQUEST['html']);

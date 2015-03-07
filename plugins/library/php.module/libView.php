@@ -27,10 +27,10 @@ class libView extends fw_define{
 		for($i=0;$i<count($tpl);$i++){
 			$view = "";
 			$view = $this->checkTplLine($tpl[$i]);
-			$html .= $view."\n";
-			//echo $view."\n";
+			//$html .= $view."\n";
+			echo $view."\n";
 		}
-		return $html;
+		//return $html;
 	}
 
 	// view
