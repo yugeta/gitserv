@@ -55,7 +55,21 @@ class fw_define{
     function fw_query(){
 
         //指定plugin(ない場合は「sample」を起動）※短縮key処理有り
-        if(!isset($_REQUEST['plugins'])){$_REQUEST['plugins'] = $this->sample;}
+        if(!isset($_REQUEST['plugins'])){
+            $_REQUEST['plugins'] = "";
+            $system_config_file = $this->define_plugins."/".$this->define_library."/data/config.json";
+            //die($system_config_file);
+            if(is_file($system_config_file)){
+                $system_config = json_decode(file_get_contents($system_config_file),true);
+                if(isset($system_config['default-plugin'])){
+                    $_REQUEST['plugins'] = $system_config['default-plugin'];
+                }
+            }
+
+            if(!$_REQUEST['plugins']){
+                $_REQUEST['plugins'] = $this->sample;
+            }
+        }
 
         //起動phpファイルの指定（ない場合は「$this->index」を指定）
         if(!isset($_REQUEST['php'])){$_REQUEST['php'] = $this->index;}

@@ -41,8 +41,30 @@ class sample_common extends fw_define{
 	}
 
 	function viewSelectPlugins(){
+		$html = "";
+		$html.= "<option value='".$this->sample."'>".$this->sample."</option>"."\n";
+		//$html.= "<option value='".$this->define_library."'>".$this->define_library."</option>"."\n";
 
-		$html = "<option value='".$this->sample."'>".$this->sample."</option>"."\n";
+		$lists = scandir($this->define_plugins);
+
+		for($i=0;$i<count($lists);$i++){
+			if($lists[$i]=="." || $lists[$i]==".."){continue;}
+			//if($lists[$i]==$this->define_library){continue;}
+			if($lists[$i]==$this->sample){continue;}
+
+			$sel="";
+			if(isset($_REQUEST['config']) && $lists[$i]==$_REQUEST['config']){$sel = "selected";}
+
+			$html.= "<option value='".$lists[$i]."' ".$sel.">".$lists[$i]."</option>"."\n";
+		}
+
+		return $html;
+	}
+
+	function viewSelectDefaultPlugin(){
+		$html = "";
+		//$html.= "<option value='".$this->sample."'>".$this->sample."</option>"."\n";
+		//$html.= "<option value='".$this->define_library."'>".$this->define_library."</option>"."\n";
 
 		$lists = scandir($this->define_plugins);
 
@@ -52,7 +74,7 @@ class sample_common extends fw_define{
 			if($lists[$i]==$this->sample){continue;}
 
 			$sel="";
-			if(isset($_REQUEST['config']) && $lists[$i]==$_REQUEST['config']){$sel = "selected";}
+			if($lists[$i]==$GLOBALS['data']['config']['default_plugin']){$sel = "selected";}
 
 			$html.= "<option value='".$lists[$i]."' ".$sel.">".$lists[$i]."</option>"."\n";
 		}
