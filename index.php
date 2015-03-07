@@ -11,6 +11,10 @@ class fw_define{
     // システム用プラグイン
     public $define_library = "library";
 
+    // デザインテーマ
+    public $define_design = "design";
+    public $define_theme  = "default";
+
     // default-plugin
     public $sample = "sample";
 
@@ -53,6 +57,9 @@ class fw_define{
 
         //起動phpファイルの指定（ない場合は「$this->index」を指定）
         if(!isset($_REQUEST['html'])){$_REQUEST['html'] = $this->index;}
+
+        //デザインテーマの指定
+        if(!isset($_REQUEST['theme'])){$_REQUEST['theme'] = $this->define_theme;}
     }
 
     /**

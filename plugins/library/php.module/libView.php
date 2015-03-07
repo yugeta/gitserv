@@ -52,6 +52,10 @@ class libView extends fw_define{
 		return $html;
 	}
 
+	function getFile($val){
+		$path = $this->define_plugins."/".$_REQUEST["plugins"]."/html/".$val;
+		return $path;
+	}
 
 	// *file[ path ]
 	function file2HTML($file=""){
@@ -133,7 +137,13 @@ class libView extends fw_define{
 				}
 				//テンプレートファイルの取得
 				else if($key=="tpl"){
-					$tpl = $this->check_query_val($tpl,$key,$val,$this->file2HTML($val),$sp);
+					$tpl = $this->check_query_val($tpl,$key,$val,$this->file2HTML($this->getFile($val)),$sp);
+				}
+				else if($key=="design-tpl"){
+					$file = $this->define_design."/".$_REQUEST['theme']."/html/".$val;
+					$tpl = $this->check_query_val($tpl,$key,$val,$this->file2HTML($file),$sp);
+
+					$tpl = str_replace("<".$sp.$key.":".$val.$sp.">" , $replace_data , $tpl);
 				}
 				//設定済みGlobal情報の取得
 				else if($key=="globals"){
@@ -150,6 +160,22 @@ class libView extends fw_define{
 				//条件文の実行
 				else if($key=="if"){
 					$tpl = $this->check_if($tpl,$data,$sp);
+				}
+				//system内のディレクトリ階層を取得する
+				else if($key=="path"){
+					//$tpl = $this->check_if($tpl,$data,$sp);
+					$replace_data = "";
+					if($val=="library" || $val=="system"){
+						$replace_data = $this->define_plugins."/".$this->define_library;
+					}
+					else if($val=="plugin"){
+						$replace_data = $this->define_plugins."/".$_REQUEST['plugin'];
+					}
+					else if($val=="design"){
+						$replace_data = $this->define_design."/".$_REQUEST['theme'];
+					}
+
+					$tpl = str_replace("<".$sp.$key.":".$val.$sp.">" , $replace_data , $tpl);
 				}
 			}
 		}

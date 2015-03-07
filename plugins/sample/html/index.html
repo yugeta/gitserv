@@ -1,13 +1,54 @@
-<div style="padding:0px;position:relative;" class="row-fluid">
-	<div class="index-word">
-		<table class="lists">
-			<tr>
-				<th>Date</th>
-				<th>PV</th>
-				<th>UU</th>
+<!DOCTYPE html>
+<html>
 
-			</tr>
-<%class1:fw_lists:viewDataFiles%>
-		</table>
+<!-- head -->
+<head>
+<%tpl:common_head.html%>
+<%design-tpl:head.html%>
+</head>
+<!-- /head -->
+
+	<body>
+		<div class="navbar navbar-inverse navbar-dash">
+
+			<!-- header -->
+			<div class="navbar-inner">
+				<div class="container">
+
+					<!-- Responsive-icon -->
+					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</a>
+
+<!-- title -->
+<%tpl:common_title.html%>
+<!-- /title -->
+
+					<div class="nav-collapse collapse">
+<!-- menu -->
+<%tpl:common_menu.html%>
+<!-- /menu -->
+					</div>
+				</div>
+			</div>
+		</div>
+
+<!-- contents -->
+<%class1:libView:viewContents(<#request:html#>)%>
+<%tpl:contents.html%>
+<!-- /contents -->
+
+<!-- footer -->
+<%tpl:common_footer.html%>
+<!-- /footer -->
+
 	</div>
-</div>
+
+<!-- Library-JS -->
+<%tpl:common_body_js.html%>
+<!-- /Library-JS -->
+
+	</body>
+</html>
