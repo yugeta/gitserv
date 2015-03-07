@@ -1,7 +1,7 @@
 <?php
 
-$upload = new UPLOAD();
-$upload->index();
+//$upload = new UPLOAD();
+//$upload->index();
 
 class UPLOAD{
 

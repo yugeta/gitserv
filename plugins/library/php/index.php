@@ -2,15 +2,15 @@
 /**
  * Folder within load PHP.
  */
-class fw_common extends fw_define{
+class fw_index extends fw_define{
 
     // loadLibrary
-    function loadLib($plugin){
+    function loadModule($plugin){
 
         if(!$plugin){return;}
 
         //基本フォルダの指定
-        $path = $this->define_plugins."/".$plugin."/php/";
+        $path = $this->define_plugins."/".$plugin."/php.module/";
 
         //exist-check
         if(!is_dir($path)){return;}
@@ -28,4 +28,6 @@ class fw_common extends fw_define{
             require_once $path.$libs[$i];
         }
     }
+
+    
 }

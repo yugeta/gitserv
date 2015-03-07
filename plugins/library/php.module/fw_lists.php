@@ -1,6 +1,6 @@
 <?php
 
-class fw_lists{
+class fw_lists extends fw_define{
     function viewDataFiles(){
         if(!is_dir("data")){return;}
         $lists = scanDir("data");

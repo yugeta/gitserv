@@ -16,26 +16,14 @@
 
 class libView extends fw_define{
 
-	//public $plugin_html = "plugins/html/";
-
 	// view
-	function viewContents($page=""){echo "BB";
+	function viewContents($file=""){
 
-		$dir = $this->define_plugins."/".$this->define_library."/html";
-
-		//対象フォルダ
-		if(!is_dir($dir)){echo "Error: not-directory:".$dir;}
-
-		//page-val
-		if(!$page){$page = "index";}
-
-		$path = $dir."/".$page.".html";
-
-		if(!is_file($path)){echo "Error: not-html:".$path;}
+		if(!is_file($file)){$this->fw_error("Error: not-html:".$file);}
 
 		//contents-page
 		$html = "";
-		$tpl = explode("\n",file_get_contents($path));
+		$tpl = explode("\n",file_get_contents($file));
 		for($i=0;$i<count($tpl);$i++){
 			$view = "";
 			$view = $this->checkTplLine($tpl[$i]);
@@ -192,6 +180,7 @@ class libView extends fw_define{
 	function check_query($tpl,$key,$val,$replace_data,$sp="%"){
 
 		if(!$val){return;}
+		if(!isset($replace_data[$val])){$replace_data[$val]="";}
 
 		$arr = explode(":",$val);
 		if(count($arr)==1){

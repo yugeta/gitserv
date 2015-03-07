@@ -3,108 +3,127 @@
  *　framework 表示処理
  */
 
-
-$viewIndex = new fw_index();
-
-
 class fw_define{
-    //プラグインフォルダ
+
+    // プラグインフォルダ
     public $define_plugins = "plugins";
-    //システム用プラグイン
-    public $define_library = "_library";
 
-    // loadLibrary
-    function loadLib($plugin){
+    // システム用プラグイン
+    public $define_library = "library";
 
-        if(!$plugin){return;}
+    // default-plugin
+    public $sample = "sample";
 
-        //基本フォルダの指定
-        $path = $this->define_plugins."/".$plugin."/php/";
+    // default-file(.php | .html)
+    public $index = "index";
 
-        //exist-check
-        if(!is_dir($path)){return;}
 
-        //基本モジュールの読み込み
-        $libs = scandir($path);
 
-        //phpモジュールの読み込み
-        for($i=0,$c=count($libs);$i<$c;$i++){
+    /**
+     * Module-set
+     */
 
-            //拡張子が.php以外は対象外
-            if(!preg_match("/\.php$/",$libs[$i])){continue;}
+    function fw_module(){
+        //基本システム関数ファイル
+        $fw_index_file = $this->define_plugins."/".$this->define_library."/php/".$this->index.".php";
 
-            //include処理
-            require_once $path.$libs[$i];
-        }
+        //基本システム関数ファイル-check
+        if(!is_file($fw_index_file)){$this->fw_error("||| Not-common-file : ".$fw_index_file);}
+
+        //基本システム関数ファイル-読み込み
+        require_once $fw_index_file;
+
+        //基本ライブラリ読み込み関数-宣言
+        $fw_index = new fw_index();
+
+        //基本ライブラリ読み込み関数-実行
+        $fw_index->loadModule($this->define_library);
+    }
+
+    /**
+     * System-Query
+     */
+
+    function fw_query(){
+        //指定plugin(ない場合は「sample」を起動）※短縮key処理有り
+        if(!isset($_REQUEST['plugins'])){$_REQUEST['plugins'] = $this->sample;}
+
+        //起動phpファイルの指定（ない場合は「$this->index」を指定）
+        if(!isset($_REQUEST['php'])){$_REQUEST['php'] = $this->index;}
+
+        //起動phpファイルの指定（ない場合は「$this->index」を指定）
+        if(!isset($_REQUEST['html'])){$_REQUEST['html'] = $this->index;}
+    }
+
+    /**
+     * Plugin-Action
+     */
+
+    function fw_pluginAction($plugin,$action=null){
+
+        if(is_null($action) || !$action){return;}
+
+        //指定プラグインmoduleの読み込み
+        $fw_index = new fw_index();
+        $fw_index->loadModule($plugin);
+
+        //指定pluginの起動phpファイル
+        $fw_plugin_index = $this->define_plugins."/".$plugin."/php/".$action.".php";
+
+        //指定pluginの起動phpファイル-check
+        if(!is_file($fw_plugin_index)){$this->fw_error("||| Not-php-file : ".$fw_plugin_index);}
+
+        //指定pluginの起動phpファイル-読み込み（実行）
+        require_once $fw_plugin_index;
+    }
+
+    /**
+     * Plugin-View
+     */
+
+    function fw_pluginView($plugin,$view=null){
+
+        if(is_null($view) || !$view){return;}
+
+        //指定pluginの表示htmlファイル
+        $fw_plugin_index = $this->define_plugins."/".$plugin."/html/".$view.".html";
+        //echo $fw_plugin_index;
+
+        //指定pluginの表示htmlファイル-check
+        if(!is_file($fw_plugin_index)){$this->fw_error("||| Not-html-file : ".$fw_plugin_index);}
+
+        //指定pluginの表示htmlファイル-表示
+        $libView = new libView();
+        echo $libView->viewContents($fw_plugin_index);
+    }
+
+    /**
+     * System-Error
+     */
+
+    function fw_error($val){
+        die($val);
     }
 }
 
-class fw_index extends fw_define{
+class fw_root extends fw_define{
 
     // 起動時に自動的に実行
     function __construct(){
 
-        //$fw_define = new fw_define();
-        /*
-        $fw_common_file = $this->define_plugins."/".$this->define_library."/php/common.php";
+        //基本モジュールセット
+        $this->fw_module();
 
-        //checl
-        if(!is_file($fw_common_file)){
-            die("not-file:".$fw_common_file);
-        }
+        //システム変数（クエリ）の調整
+        $this->fw_query();
 
-        //common読み込み
-        require_once $fw_common_file;
-        */
-        //基本ライブラリの読み込み
-        //$fw_common = new fw_common();
-        $this->loadLib($this->define_library);
-        /*
-        if(!$_REQUEST['plugin']){
-            $_REQUEST['plugin'] = "sample";
-        }
-        $fw_common->loadLib($_REQUEST['plugin']);
-        */
+        //指定pluginの読み込み
+        $this->fw_pluginAction($_REQUEST['plugins'],$_REQUEST['php']);
 
+        //指定pluginの表示
+        $this->fw_pluginView($_REQUEST['plugins'],$_REQUEST['html']);
 
-        //プラグイン指定がある場合は、指定プラグインのPHPを読み込み、起動
-        if(is_set($_REQUEST['plugin'])){
-            $fw_common->loadLib($_REQUEST['plugin']);
-        }
-
-        //プラグインがない場合は、初期設定画面を表示
-        else{
-
-            $path = $this->define_plugins."/".$this->define_library."/html/index.html";echo $path;
-
-            $libView = new libView();
-
-            $html = explode("\n",file_get_contents($path));
-            for($i=0;$i<count($html);$i++){
-                $view = "";
-                $view = $libView->checkTplLine($html[$i]);
-                echo $view."\n";
-            }
-        }
-        /*
-        //テンプレートライブラリの読み込み
-        $libView = new libView();
-
-        //
-        $path = $this->plugins."php/".$_REQUEST['php'].".php";
-
-        //php-proc
-        if($_REQUEST['php'] && is_file($path)){
-            require_once $path;
-        }
-
-        //template-view
-        $html = explode("\n",file_get_contents($this->lib."html/index.html"));
-        for($i=0;$i<count($html);$i++){
-            $view = "";
-            $view = $libView->checkTplLine($html[$i]);
-            echo $view."\n";
-        }
-        */
     }
 }
+
+$viewIndex = new fw_root();
