@@ -28,6 +28,7 @@ class libView extends fw_define{
 			$view = "";
 			$view = $this->checkTplLine($tpl[$i]);
 			$html .= $view."\n";
+			//echo $view."\n";
 		}
 		return $html;
 	}
@@ -52,8 +53,8 @@ class libView extends fw_define{
 		return $html;
 	}
 
-	function getFile($val){
-		$path = $this->define_plugins."/".$_REQUEST["plugins"]."/html/".$val;
+	function getFile($val,$type="html"){
+		$path = $this->define_plugins."/".$_REQUEST["plugins"]."/".$type."/".$val;
 		return $path;
 	}
 
@@ -139,10 +140,19 @@ class libView extends fw_define{
 				else if($key=="tpl"){
 					$tpl = $this->check_query_val($tpl,$key,$val,$this->file2HTML($this->getFile($val)),$sp);
 				}
-				else if($key=="design-tpl"){
-					$file = $this->define_design."/".$_REQUEST['theme']."/html/".$val;
+				else if($key=="html"){
+					$file = $this->getFile($val).".html";
 					$tpl = $this->check_query_val($tpl,$key,$val,$this->file2HTML($file),$sp);
-
+				}
+				else if($key=="php"){
+					$file = $this->getFile($val,"php").".php";
+					require_once $file;
+					$tpl = str_replace("<".$sp.$key.":".$val.$sp.">" , "" , $tpl);
+				}
+				else if($key=="design-tpl"){
+					$file = $this->define_design."/".$GLOBALS['config']['theme']."/html/".$val;
+					$tpl = $this->check_query_val($tpl,$key,$val,$this->file2HTML($file),$sp);
+					$replace_data = "";
 					$tpl = str_replace("<".$sp.$key.":".$val.$sp.">" , $replace_data , $tpl);
 				}
 				//設定済みGlobal情報の取得
@@ -172,7 +182,7 @@ class libView extends fw_define{
 						$replace_data = $this->define_plugins."/".$_REQUEST['plugin'];
 					}
 					else if($val=="design"){
-						$replace_data = $this->define_design."/".$_REQUEST['theme'];
+						$replace_data = $this->define_design."/".$GLOBALS['config']['theme'];
 					}
 
 					$tpl = str_replace("<".$sp.$key.":".$val.$sp.">" , $replace_data , $tpl);

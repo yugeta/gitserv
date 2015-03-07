@@ -49,6 +49,7 @@ class fw_define{
      */
 
     function fw_query(){
+
         //指定plugin(ない場合は「sample」を起動）※短縮key処理有り
         if(!isset($_REQUEST['plugins'])){$_REQUEST['plugins'] = $this->sample;}
 
@@ -58,15 +59,22 @@ class fw_define{
         //起動phpファイルの指定（ない場合は「$this->index」を指定）
         if(!isset($_REQUEST['html'])){$_REQUEST['html'] = $this->index;}
 
+        //コンフィグデータの読み込み
+        $conf_file = $this->define_plugins."/".$_REQUEST['plugins']."/data/config.json";
+        $GLOBALS['config'] = array();
+        if(is_file($conf_file)){
+            $GLOBALS['config'] = json_decode(file_get_contents($conf_file),true);
+        }
+
         //デザインテーマの指定
-        if(!isset($_REQUEST['theme'])){$_REQUEST['theme'] = $this->define_theme;}
+        if(!isset($GLOBALS['config']['theme'])){$GLOBALS['config']['theme'] = $this->define_theme;}
     }
 
     /**
      * Plugin-Action
      */
 
-    function fw_pluginAction($plugin,$action=null){
+    function fw_pluginAction($plugin,$action=null,$folder="php"){
 
         if(is_null($action) || !$action){return;}
 
@@ -75,7 +83,7 @@ class fw_define{
         $fw_index->loadModule($plugin);
 
         //指定pluginの起動phpファイル
-        $fw_plugin_index = $this->define_plugins."/".$plugin."/php/".$action.".php";
+        $fw_plugin_index = $this->define_plugins."/".$plugin."/".$folder."/".$action.".php";
 
         //指定pluginの起動phpファイル-check
         if(!is_file($fw_plugin_index)){$this->fw_error("||| Not-php-file : ".$fw_plugin_index);}
@@ -93,7 +101,8 @@ class fw_define{
         if(is_null($view) || !$view){return;}
 
         //指定pluginの表示htmlファイル
-        $fw_plugin_index = $this->define_plugins."/".$plugin."/html/".$view.".html";
+        //$fw_plugin_index = $this->define_plugins."/".$plugin."/html/".$view.".html";
+        $fw_plugin_index = $this->define_design."/".$GLOBALS['config']['theme']."/html/".$view.".html";
         //echo $fw_plugin_index;
 
         //指定pluginの表示htmlファイル-check
@@ -101,7 +110,7 @@ class fw_define{
 
         //指定pluginの表示htmlファイル-表示
         $libView = new libView();
-        echo $libView->viewContents($fw_plugin_index);
+        $libView->viewContents($fw_plugin_index);
     }
 
     /**
@@ -125,7 +134,8 @@ class fw_root extends fw_define{
         $this->fw_query();
 
         //指定pluginの読み込み
-        $this->fw_pluginAction($_REQUEST['plugins'],$_REQUEST['php']);
+        $fw_index = new fw_index();
+        $fw_index->loadModule($_REQUEST['plugins']);
 
         //指定pluginの表示
         $this->fw_pluginView($_REQUEST['plugins'],$_REQUEST['html']);

@@ -58,6 +58,6 @@ class libUrl extends fw_define{
 	//リダイレクト処理
 	function setUrl($url){
 		if(!$url){return;}
-		header('Location: '.$url);
+		header("Location: ".$url);
 	}
 }

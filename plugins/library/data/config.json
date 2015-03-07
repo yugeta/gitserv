@@ -1,0 +1,23 @@
+{
+	"plugin":{
+		"name":{
+			"type":"text"
+		},
+		"theme":{
+			"type":"list",
+			"target":"design/"
+		},
+		"menu":{
+			"type":"array",
+			"target":"plugins/%plugin%/data/menu.json"
+		}
+
+	},
+	"design":{
+		"name":{
+			"type":"text"
+		}
+	}
+
+
+}
