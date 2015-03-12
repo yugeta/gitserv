@@ -1,0 +1,13 @@
+
+.res-window{
+	min-height:50px;
+	max-height:150px;
+	border:1px solid #DDD;
+	padding:8px;
+	margin:8px;
+	overflow:scroll;
+	width:90%;
+	font-weight:normal;
+	font-size:12px;
+	line-height:16px;
+}

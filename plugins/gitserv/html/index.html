@@ -1,0 +1,51 @@
+<script type='text/javascript' src='<%class:fw_define:define_plugins%>/<%request:plugins%>/js/config.js'></script>
+<script type='text/javascript' src='<%class:fw_define:define_plugins%>/<%request:plugins%>/js/code.js'></script>
+<link rel="stylesheet" href="<%class:fw_define:define_plugins%>/<%request:plugins%>/css/common.css" type="text/css">
+
+<form method="post">
+<input type="hidden" name="plugin" value="<%request:plugins%>">
+<input type="hidden" name="mode" value="update">
+
+<div style="padding:0px;position:relative;" class="row-fluid">
+	<div class="index-word">
+
+		<div style="height:20px;"></div>
+
+
+		<h2>Repositry</h2>
+		<select class='repository' name="data[repository]">
+			<option value=''>*リポジトリを選択してください</option>
+<%class:gitserv_common:getRepositoriesSource%>
+		</select>
+
+		<h2>Files</h2>
+		<pre name="source_view">
+<%class:gitserv_common:getGitFiles(<#request:repository#>)%>
+		</pre>
+
+		<h2>git log</h2>
+		<pre name="source_view">
+<%class:gitserv_common:getGitLog(<#request:repository#>)%>
+		</pre>
+
+
+
+		<h2>Readme</h2>
+		<pre name="source_view">
+
+		</pre>
+
+
+
+
+		<!--
+		<div style="margin:20px;">
+			<input type="submit" value="update" class="btn">
+		</div>
+		-->
+
+
+	</div>
+</div>
+
+</form>

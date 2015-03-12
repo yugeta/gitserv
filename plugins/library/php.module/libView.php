@@ -292,6 +292,8 @@ class libView extends fw_define{
 
 		eval('$cls = new '.$data[1].'();');
 
+		$ret = "";
+
 		if(preg_match("@^(.*?)\((.*?)\)$@" , $data[2] , $met)){
 			$fnc = $met[1];
 
@@ -305,11 +307,15 @@ class libView extends fw_define{
 			if(!method_exists($cls,$fnc)){return $tpl;}
 			$ret = call_user_func_array(array($cls,$fnc) , $vals);
 		}
-		else{
+		else if(method_exists($cls,$data[2])){
 			$fnc = $data[2];
 			if(!method_exists($cls,$fnc)){return $tpl;}
 			$ret = call_user_func(array($cls,$fnc));
 		}
+		else if(is_string($cls->{$data[2]})){
+			$ret = $cls->{$data[2]};
+		}
+
 
 		return str_replace("<".$sp.join(":",$data).$sp.">" , $ret , $tpl);
 	}
