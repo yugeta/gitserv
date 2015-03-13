@@ -72,6 +72,7 @@
 		var style="<style type='text/css' class='"+$$.data.class_name+"'>";
 		style+= 'pre.'+$$.data.class_name+'{';
 			style+= 'margin:4px;';
+			style+= 'padding:0;';
 			style+= 'background-color:#DDD;';
 			style+= 'overflow:auto;';
 			style+= 'max-height:200px;';
@@ -79,7 +80,7 @@
 
 		style+= 'pre.'+$$.data.class_name+' ol.'+$$.data.class_name+'{';
 			style+= 'list-style: decimal;';
-			style+= 'margin: 0px 0px 1px 40px;';
+			style+= 'margin: 0px 0px 0px 40px;';
 			style+= 'background-color:white;';
 			style+= 'padding:0;';
 			style+= 'color:#5c5c5c;';
@@ -94,13 +95,17 @@
 			style+= 'list-style-position: outside;';
 			style+= 'border-left: 3px solid #888;';
 			style+= 'padding: 0 3px 0 10px;';
-			style+= 'line-height: 18px;';
+			style+= 'line-height: 20px;';
 			style+= 'white-space:pre-wrap;';
 			style+= 'word-break: break-all;';
 		style+= '}';
 
 		style+= 'pre.'+$$.data.class_name+' li.'+$$.data.class_name+':nth-child(2n+0){';
-		style+= '    background-color: #EEE;';
+			style+= 'background-color: #EEE;';
+		style+= '}';
+
+		style+= 'pre.'+$$.data.class_name+' li.'+$$.data.class_name+':hover{';
+			style+= 'background-color: #DDF;';
 		style+= '}';
 
 		style+= '</style>';

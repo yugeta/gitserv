@@ -19,8 +19,14 @@
 		</select>
 
 		<h2>Files</h2>
+		<div class='tree-path'>Directory | <%class:gitserv_common:getBreadcrumpList%></div>
 		<pre name="code">
 <%class:gitserv_common:getGitFiles(<#request:repository#>,<#request:dir#>)%>
+		</pre>
+
+		<h2>Branch</h2>
+		<pre name="code">
+<%class:gitserv_common:getBranch(<#request:repository#>)%>
 		</pre>
 
 		<h2>git log</h2>
