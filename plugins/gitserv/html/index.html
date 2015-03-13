@@ -19,12 +19,12 @@
 		</select>
 
 		<h2>Files</h2>
-		<pre name="source_view">
-<%class:gitserv_common:getGitFiles(<#request:repository#>)%>
+		<pre name="code">
+<%class:gitserv_common:getGitFiles(<#request:repository#>,<#request:dir#>)%>
 		</pre>
 
 		<h2>git log</h2>
-		<pre name="source_view">
+		<pre name="code">
 <%class:gitserv_common:getGitLog(<#request:repository#>)%>
 		</pre>
 

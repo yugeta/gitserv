@@ -12,88 +12,146 @@
 **/
 (function(){
 
-	var $={
-		d:{
-			name:'code',
-			class_name:'source_view',
-		$:0},
-		//onload後起動処理
-		set:function(){
-			$.check();
-			$.css();
-		},
-		//DOM構造設定
-		check:function(){
-			var code = document.getElementsByName($.d.name);
-			for(var i=0;i<code.length;i++){
-				//preタグのみ対象とする
-				if(code[i].tagName!="PRE"){continue}
+	var $$ = {};
 
-				//preタグにclass名を設定
-				code[i].className+= " "+$.d.class_name;
+	$$.data = {
+		name:'code',
+		class_name:'source_view'
+	};
 
-				//中身をリストタグに置き換える
-				var prg = code[i].innerText.split("\n");
+	//onload後起動処理
+	$$.set = function(){
+		$$.check();
+		$$.css();
+	};
 
-				//書き換えようhtml作成
-				var html="<ol>";
-				for(var j=0;j<prg.length;j++){
-					prg[j] = prg[j].split("\r").join("");
+	//DOM構造設定
+	$$.check = function(){
+		var code = document.getElementsByName($$.data.name);
+		for(var i=0;i<code.length;i++){
+			//preタグのみ対象とする
+			if(code[i].tagName!="PRE"){continue}
 
-					//最終行処理（改行とスペースを除外してnullの場合は処理無し）
-					if(j==prg.length-1){
-						var txt = prg[j];
-						txt = txt.split(" ").join("");
-						txt = txt.split("\t").join("");
-						if(txt==""){continue}
-					}
+			//preタグにclass名を設定
+			code[i].className+= " " + $$.data.class_name;
 
-					html+="<li>"+prg[j]+"</li>";
+			//中身をリストタグに置き換える
+			//var prg = code[i].innerText.split("\n");
+			var prg = code[i].innerHTML.split("\n");
+
+			//書き換えようhtml作成
+			var html = "";
+			html+= "<ol class='"+$$.data.class_name+"'>";
+			for(var j=0;j<prg.length;j++){
+				prg[j] = prg[j].split("\r").join("");
+
+				//最終行処理（改行とスペースを除外してnullの場合は処理無し）
+				if(j==prg.length-1){
+					var txt = prg[j];
+					txt = txt.split(" ").join("");
+					txt = txt.split("\t").join("");
+					if(txt==""){continue}
 				}
-				html+="</ol>";
 
-				//ソースの中身書き換え
-				code[i].innerHTML = html;
+				html+="<li class='"+$$.data.class_name+"'>"+prg[j]+"</li>";
+			}
+			html+="</ol>";
 
+			//ソースの中身書き換え
+			code[i].innerHTML = html;
+
+		}
+	};
+
+	//スタイル追加
+	$$.css = function(){
+		var head = document.getElementsByTagName("head");
+
+		if(head[0].getElementsByClassName($$.data.class_name).length){return}
+
+		var style="<style type='text/css' class='"+$$.data.class_name+"'>";
+		style+= 'pre.'+$$.data.class_name+'{';
+			style+= 'margin:4px;';
+			style+= 'background-color:#DDD;';
+			style+= 'overflow:auto;';
+			style+= 'max-height:200px;';
+		style+= '}';
+
+		style+= 'pre.'+$$.data.class_name+' ol.'+$$.data.class_name+'{';
+			style+= 'list-style: decimal;';
+			style+= 'margin: 0px 0px 1px 40px;';
+			style+= 'background-color:white;';
+			style+= 'padding:0;';
+			style+= 'color:#5c5c5c;';
+			style+= 'font-family: "Consolas", "Courier New", Courier, mono, serif;';
+			style+= 'font-size: 12px;';
+		style+= '}';
+
+		style+= 'pre.'+$$.data.class_name+' li.'+$$.data.class_name+'{';
+			style+= 'background-color: #FFF;';
+			style+= 'color: inherit;';
+			style+= 'list-style: decimal-leading-zero;';
+			style+= 'list-style-position: outside;';
+			style+= 'border-left: 3px solid #888;';
+			style+= 'padding: 0 3px 0 10px;';
+			style+= 'line-height: 18px;';
+			style+= 'white-space:pre-wrap;';
+			style+= 'word-break: break-all;';
+		style+= '}';
+
+		style+= 'pre.'+$$.data.class_name+' li.'+$$.data.class_name+':nth-child(2n+0){';
+		style+= '    background-color: #EEE;';
+		style+= '}';
+
+		style+= '</style>';
+		head[0].innerHTML += style;
+	};
+
+	$$.lib = {
+		eventAdd:function(t, m, f){
+
+			//other Browser
+			if (t.addEventListener){
+				t.addEventListener(m, f, false);
+			}
+
+			//IE
+			else{
+				if(m=='load'){
+					var d = document.body;
+					if(typeof(d)!='undefined'){d = window;}
+
+					if((typeof(onload)!='undefined' && typeof(d.onload)!='undefined' && onload == d.onload) || typeof(eval(onload))=='object'){
+						t.attachEvent('on' + m, function() { f.call(t , window.event); });
+					}
+					else{
+						f.call(t, window.event);
+					}
+				}
+				else{
+					t.attachEvent('on' + m, function() { f.call(t , window.event); });
+				}
 			}
 		},
-		//スタイル追加
-		css:function(){
-			var head = document.getElementsByTagName("head");
-			var style="<style tyle='text/css'>";
-			style+= '.'+$.d.class_name+'{';
-			style+= '    border:1px solid black;';
-			style+= '    margin:4px;';
-			style+= '    background-color:#DDD;';
-			style+= '    overflow:auto;';
-			style+= '}';
-			style+= '.'+$.d.class_name+' ol{';
-			style+= '    list-style: decimal;';
-			style+= '    margin: 0px 0px 1px 45px;';
-			style+= '    background-color:white;';
-			style+= '    padding:0;';
-			style+= '    color:#5c5c5c;';
-			style+= '    font-family: "Consolas", "Courier New", Courier, mono, serif;';
-			style+= '    font-size: 12px;';
-			style+= '    line-height: 16px;';
-			style+= '}';
-			style+= '.'+$.d.class_name+' li{';
-			style+= '    background-color: #FFF;';
-			style+= '    color: inherit;';
-			style+= '    list-style: decimal-leading-zero;';
-			style+= '    list-style-position: outside;';
-			style+= '    border-left: 3px solid #6CE26C;';
-			style+= '    padding: 0 3px 0 10px;';
-			style+= '    line-height:14px;';
-			style+= '    white-space:pre-wrap;';
-			style+= '    word-break: break-all;';
-			style+= '    line-height: 16px;';
-			style+= '}';
-			style+= '</style>';
-			head[0].innerHTML += style;
+		urlProperty:function(url){
+			if(!url){return ""}
+			var res = {};
+			var urls = url.split("?");
+			res.url = urls[0];
+			res.domain = urls[0].split("/")[2];
+			res.querys={};
+			if(urls[1]){
+				var querys = urls[1].split("&");
+				for(var i=0;i<querys.length;i++){
+					var keyValue = querys[i].split("=");
+					if(keyValue.length!=2||keyValue[0]===""){continue}
+					res.querys[keyValue[0]] = keyValue[1];
+				}
+			}
+			return res;
 		}
 	};
 
 	//onloadで実行
-	$LIB.event(window,"load",$.set);
+	$$.lib.eventAdd(window,"load",$$.set);
 })();

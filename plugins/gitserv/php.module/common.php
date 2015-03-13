@@ -56,9 +56,11 @@ class gitserv_common extends fw_define{
 
 		//１階層のみ「git ls-files|perl -pe 's/\/.*/\//'|uniq」
 		if($directory){
+			//$cmd = "cd ".$GLOBALS['gitserv']['target-dir']."|"."git ls-files ".$directory;
 			$cmd = "cd ".$GLOBALS['gitserv']['target-dir']."|"."git ls-files ".$directory."|perl -pe 's/\/.*/\//'|uniq";
 		}
 		else{
+			//$cmd = "cd ".$GLOBALS['gitserv']['target-dir']."|"."git ls-files";
 			$cmd = "cd ".$GLOBALS['gitserv']['target-dir']."|"."git ls-files|perl -pe 's/\/.*/\//'|uniq";
 		}
 
@@ -74,7 +76,18 @@ class gitserv_common extends fw_define{
 
 		exec($cmd,$res);
 
-		return join("\n",$res);
+		$html = array();
+
+		for($i=0;$i<count($res);$i++){
+			if(preg_match("/\/$/",$res[$i])){
+				$html[] = "<a href='google.com'>".$res[$i]."</a>";
+			}
+			else{
+				$html[] = $res[$i];
+			}
+		}
+
+		return join("\n",$html);
 	}
 
 }
