@@ -23,5 +23,11 @@ class gitserv_index extends fw_define{
 		$GLOBALS['gitserv'] = json_decode(file_get_contents($gitserv_json),true);
 		//print_r($GLOBALS['gitserv']['target-dir']);
 
+		$html_path = $this->define_plugins."/".$_REQUEST['plugins']."/php/".$_REQUEST['menu'].".php";
+
+		if($_REQUEST['menu'] && is_file($html_path)){
+			require_once $html_path;
+		}
+
 	}
 }

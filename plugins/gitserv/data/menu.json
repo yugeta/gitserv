@@ -1,0 +1,14 @@
+[
+	{
+		"menu":"",
+		"name":"Top"
+	},
+	{
+		"menu":"repository",
+		"name":"Repository"
+	},
+	{
+		"menu":"config",
+		"name":"Config"
+	}
+]

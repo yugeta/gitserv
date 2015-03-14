@@ -1,0 +1,26 @@
+<script type='text/javascript' src='<%class:fw_define:define_plugins%>/<%request:plugins%>/js/config.js'></script>
+<script type='text/javascript' src='<%class:fw_define:define_plugins%>/<%request:plugins%>/js/code.js'></script>
+<link rel="stylesheet" href="<%class:fw_define:define_plugins%>/<%request:plugins%>/css/common.css" type="text/css">
+
+<form method="post" name="form1">
+<input type="hidden" name="plugin" value="<%request:plugins%>">
+<input type="hidden" name="menu" value="<%request:menu%>">
+<input type="hidden" name="mode" value="update">
+
+<div style="padding:0px;position:relative;" class="row-fluid">
+	<div class="index-word">
+
+		<div style="height:20px;"></div>
+
+		<h2>Repositry</h2>
+
+		<ol class='repository'>
+<%class:gitserv_common:getRepositoriesLists%>
+		</ol>
+
+		<input type='text' name='repo' value=''> <i class="icon-plus buttonAdd"></i>
+
+	</div>
+</div>
+
+</form>

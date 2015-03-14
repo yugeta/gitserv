@@ -32,6 +32,7 @@ class fw_define{
      */
 
     function fw_module(){
+
         //基本システム関数ファイル
         $fw_index_file = $this->define_plugins."/".$this->define_library."/php/".$this->index.".php";
 
@@ -139,6 +140,27 @@ class fw_define{
 
     function fw_error($val){
         die($val);
+    }
+
+    function fw_menu($plugins){
+
+        if(!$plugins){return;}
+
+        $plugin_menu_path = $this->define_plugins."/".$plugins."/data/menu.json";
+        if(!is_file($plugin_menu_path)){return;}
+
+        $json = json_decode(file_get_contents($plugin_menu_path),true);
+
+        $html = "";
+        $url = new libUrl();
+        $path = $url->getUrl();
+
+        for($i=0;$i<count($json);$i++){
+            $menu = ($json[$i]['menu'])?"?menu=".$json[$i]['menu']:"";
+            $html.= "<li><a href='".$path.$menu."'>".$json[$i]['name']."</a></li>"."\n";
+        }
+
+        return $html;
     }
 }
 

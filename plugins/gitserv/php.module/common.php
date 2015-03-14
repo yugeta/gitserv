@@ -284,4 +284,21 @@ class gitserv_common extends fw_define{
 		return join("\n",$html);
 	}
 
+	function getRepositoriesLists(){
+
+		if(!isset($GLOBALS['gitserv'])
+		|| !isset($GLOBALS['gitserv']['target-dir'])
+		){return;}
+
+		$lists = $this->getRepositories($GLOBALS['gitserv']['target-dir']);
+
+		$html = "";
+		for($i=0;$i<count($lists);$i++){
+			$html.= "<li>".$lists[$i]."</li>"."\n";
+		}
+
+		return $html;
+	}
+
+
 }
