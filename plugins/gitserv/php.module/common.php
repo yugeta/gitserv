@@ -1,22 +1,29 @@
 <?php
 
 class gitserv_common extends fw_define{
-	function getRepositories(){
+	function getRepositories($target,$dir=""){
 
-		if(!isset($GLOBALS['gitserv'])
-		|| !isset($GLOBALS['gitserv']['target-dir'])
-		){return;}
+		//$target = $GLOBALS['gitserv']['target-dir'];
 
-		$target = $GLOBALS['gitserv']['target-dir'];
+		if(!is_dir($target.$dir)){return;}
 
-		if(!is_dir($target)){return;}
-
-		$lists = scandir($target);
+		$lists = scandir($target.$dir);
 		$dirs = array();
 
 		for($i=0;$i<count($lists);$i++){
 			if($lists[$i]=="." || $lists[$i]==".."){continue;}
-			$dirs[] = $lists[$i];
+			//HEADファイルcheck
+			$head = $target.$dir.$lists[$i]."/HEAD";
+			if(is_file($head)){
+				$dirs[] = $dir.$lists[$i];
+			}
+			//HEADファイルがなければ、再帰的に中を検索する
+			else{
+				$res = $this->getRepositories($target,$dir.$lists[$i]."/");
+				for($j=0;$j<count($res);$j++){
+					$dirs[] = $res[$j];
+				}
+			}
 		}
 
 		return $dirs;
@@ -24,7 +31,11 @@ class gitserv_common extends fw_define{
 
 	function getRepositoriesSource(){
 
-		$lists = $this->getRepositories();
+		if(!isset($GLOBALS['gitserv'])
+		|| !isset($GLOBALS['gitserv']['target-dir'])
+		){return;}
+
+		$lists = $this->getRepositories($GLOBALS['gitserv']['target-dir']);
 
 		$html="";
 
@@ -232,12 +243,12 @@ class gitserv_common extends fw_define{
 			$url = new libUrl();
 			$branch = ($_REQUEST['branch'])?$_REQUEST['branch']:"master";
 			//return "$ git push ".$GLOBALS['gitserv']['target-dir']." ".$branch;
-			return "$ git push ".$GLOBALS['gitserv']['server-user']."@".$url->getDomain().":".$GLOBALS['gitserv']['target-dir']." ".$branch;
+			return "$ git push ".$GLOBALS['gitserv']['server-user']."@".$url->getDomain().":".$GLOBALS['gitserv']['target-dir'].$repository." ".$branch;
 		}
 		else if($mode=="push-local"){
 			$url = new libUrl();
 			$branch = ($_REQUEST['branch'])?$_REQUEST['branch']:"master";
-			return "$ git push ".$GLOBALS['gitserv']['target-dir']." ".$branch;
+			return "$ git push ".$GLOBALS['gitserv']['target-dir'].$repository." ".$branch;
 		}
 		else if($mode=="clone"){
 			return "$ git clone ".$GLOBALS['gitserv']['target-dir'].$repository;
