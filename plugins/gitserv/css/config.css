@@ -1,0 +1,14 @@
+input.inputform{
+	width:80%;
+
+}
+input.submitButton{
+	display:block;
+	padding:4px;
+	width:100px;
+	margin:4px auto;
+	border-radius:4px;
+}
+input.submitButton:hover{
+	opacity:0.5;
+}

@@ -1,0 +1,35 @@
+<script type='text/javascript' src='<%class:fw_define:define_plugins%>/<%request:plugins%>/js/config.js'></script>
+<script type='text/javascript' src='<%class:fw_define:define_plugins%>/<%request:plugins%>/js/code.js'></script>
+<link rel="stylesheet" href="<%class:fw_define:define_plugins%>/<%request:plugins%>/css/common.css" type="text/css">
+<link rel="stylesheet" href="<%class:fw_define:define_plugins%>/<%request:plugins%>/css/config.css" type="text/css">
+
+
+<form method="post" name="form1">
+<input type="hidden" name="plugin" value="<%request:plugins%>">
+<input type="hidden" name="menu" value="<%request:menu%>">
+<input type="hidden" name="mode" value="update">
+
+<div style="padding:0px;position:relative;" class="row-fluid">
+	<div class="index-word">
+
+		<div style="height:20px;"></div>
+
+		<h2>Config</h2>
+
+		<ul>
+			<li>
+				<p>データの保存先ディレクトリ</p>
+				<input class="inputform" type="text" name="data[target-dir]" value="<%globals:gitserv:target-dir%>">
+			</li>
+			<li>
+				<p>サーバー作業用ユーザーアカウント（git-user）</p>
+				<input class="inputform" type="text" name="data[server-user]" value="<%globals:gitserv:server-user%>">
+			</li>
+		</ul>
+
+		<input class="submitButton" type='button' value='更新' onclick="if(confirm('データを更新しますか？')){document.form1.submit()}">
+
+	</div>
+</div>
+
+</form>
