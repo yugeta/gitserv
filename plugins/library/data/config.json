@@ -1,1 +1,4 @@
-{"default-plugin":"gitserv"}
+{
+	"default-plugin":"gitserv",
+	"bootstrap":"bootstrap-3.3.2-dist"
+}

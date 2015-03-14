@@ -111,7 +111,7 @@ class gitserv_common extends fw_define{
 		$dirs = explode("/",$_REQUEST['dir']);
 
 		for($i=0;$i<count($dirs)-1;$i++){
-
+			/*
 			//現在階層
 			if($i==count($dirs)-2){
 				$link_path[] = $dirs[$i];
@@ -123,6 +123,10 @@ class gitserv_common extends fw_define{
 				$link = $this->getQuery($_REQUEST['repository'],$_REQUEST['branch'],join("/",$dir)."/");
 				$link_path[] = "<a href='".$link."'>".$dirs[$i]."</a>";
 			}
+			*/
+			$dir = array_slice($dirs,0,$i+1);
+			$link = $this->getQuery($_REQUEST['repository'],$_REQUEST['branch'],join("/",$dir)."/");
+			$link_path[] = "<a href='".$link."'>".$dirs[$i]."</a>";
 		}
 
 
@@ -140,18 +144,15 @@ class gitserv_common extends fw_define{
 		$head = ($_REQUEST['branch'])?$_REQUEST['branch']:"HEAD";
 		if($_REQUEST['log']){$head = $_REQUEST['log'];}
 
+		$dir_path = $this->getDirectory($directory);
+
 		//１階層のみ「git ls-files|perl -pe 's/\/.*/\//'|uniq」
 		if($directory){
-
-			$ptn = str_replace("/","\/",$directory);
-
+			$ptn = str_replace("/","\/",$dir_path);
 			$cmd = "git ls-tree ".$head." -r --name-only | grep '^".$ptn."' | perl -pe 's/".$ptn."//' | perl -pe 's/\/.*/\//' | uniq";
 		}
 		else{
-
-
 			$cmd = "git ls-tree ".$head." -r --name-only | perl -pe 's/\/.*/\//' | uniq";
-
 		}
 
 		exec($cmd,$res);
@@ -169,20 +170,26 @@ class gitserv_common extends fw_define{
 				array_pop($dirs);
 				$query_dir = "&dir=".join("/",$dirs)."/";
 			}
-
+			/*
 			//$link = $url->getUrl()."?repository=".$repository.$query_dir;
 			$link = $this->getQuery($repository,$_REQUEST['branch'],$query_dir);
 			$html[] = "<a href='".$link."'>..</a>";
+			*/
 		}
 
 		for($i=0;$i<count($res);$i++){
 			if(preg_match("/\/$/",$res[$i])){
-				//$link = $url->getUrl()."?repository=".$repository."&dir=".$directory.$res[$i];
-				$link = $this->getQuery($repository,$_REQUEST['branch'],$directory.$res[$i]);
-				$html[] = "<a href='".$link."'>".$res[$i]."</a>";
+				$link = $this->getQuery($repository,$_REQUEST['branch'],$dir_path.$res[$i]);
+				$val = '<i class="icon-folder-open"></i> ';
+				$val.= "<a href='".$link."'>".$res[$i]."</a>";
+				$html[] = $val;
 			}
 			else{
-				$html[] = $res[$i];
+				$link = $this->getQuery($repository,$_REQUEST['branch'],$dir_path.$res[$i]);
+				$val = '<i class="icon-file"></i> ';
+				//$val.= $res[$i];
+				$val.= "<a href='".$link."'>".$res[$i]."</a>";
+				$html[] = $val;
 			}
 		}
 
@@ -210,6 +217,51 @@ class gitserv_common extends fw_define{
 
 		return $url->getUrl()."?".join("&",$query);
 
+	}
+
+	function getDirectory($directory){
+		if(!$directory){return;}
+		$sp = explode("/",$directory);
+		if(count($sp)==1){return;}
+		$sp[count($sp)-1] = "";
+		return join("/",$sp);
+	}
+
+	function getAccess($repository,$mode=""){
+		if($mode=="push"){
+			$url = new libUrl();
+			$branch = ($_REQUEST['branch'])?$_REQUEST['branch']:"master";
+			//return "$ git push ".$GLOBALS['gitserv']['target-dir']." ".$branch;
+			return "$ git push ".$GLOBALS['gitserv']['server-user']."@".$url->getDomain().":".$GLOBALS['gitserv']['target-dir']." ".$branch;
+		}
+		else if($mode=="clone"){
+			return "$ git clone ".$GLOBALS['gitserv']['target-dir'].$repository;
+		}
+		else{
+			return $GLOBALS['gitserv']['target-dir'].$repository;
+		}
+	}
+
+	function getSource($repository){
+		if(!$_REQUEST['dir']){return;}
+
+		//dir-check
+		if(preg_match("/\/$/",$_REQUEST['dir'])){return;}
+
+		$branch = ($_REQUEST['branch'])?$_REQUEST['branch']:"master";
+
+		$cmd = "git cat-file -p ".$branch.":".$_REQUEST['dir'];
+		unset($res);
+		exec($cmd,$res);
+
+		$html=array();
+		for($i=0;$i<count($res);$i++){
+			$res[$i] = str_replace("<","&lt;",$res[$i]);
+			$res[$i] = str_replace(">","&gt;",$res[$i]);
+			$html[] = $res[$i];
+		}
+
+		return join("\n",$html);
 	}
 
 }

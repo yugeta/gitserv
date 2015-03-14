@@ -17,6 +17,17 @@
 			<option value=''>*リポジトリを選択してください</option>
 <%class:gitserv_common:getRepositoriesSource%>
 		</select>
+		<i class="icon-plus buttonAdd"></i>
+
+		<h2>Access</h2>
+		<div class="access">
+			<h4>target-path</h4>
+				<%class:gitserv_common:getAccess(<#request:repository#>)%>
+			<h4>push</h4>
+				<%class:gitserv_common:getAccess(<#request:repository#>,"push")%>
+			<h4>clone</h4>
+				<%class:gitserv_common:getAccess(<#request:repository#>,"clone")%>
+		</div>
 
 		<h2>Files</h2>
 		<div class='tree-path'>Directory | <%class:gitserv_common:getBreadcrumpList%></div>
@@ -29,16 +40,16 @@
 <%class:gitserv_common:getBranch(<#request:repository#>)%>
 		</pre>
 
-		<h2>git log</h2>
+		<h2>Commit</h2>
 		<pre name="code">
 <%class:gitserv_common:getGitLog(<#request:repository#>)%>
 		</pre>
 
 
 
-		<h2>Readme</h2>
-		<pre name="source_view">
-
+		<h2>Source</h2>
+		<pre name="code">
+<%class:gitserv_common:getSource(<#request:repository#>)%>
 		</pre>
 
 
