@@ -234,6 +234,11 @@ class gitserv_common extends fw_define{
 			//return "$ git push ".$GLOBALS['gitserv']['target-dir']." ".$branch;
 			return "$ git push ".$GLOBALS['gitserv']['server-user']."@".$url->getDomain().":".$GLOBALS['gitserv']['target-dir']." ".$branch;
 		}
+		else if($mode=="push-local"){
+			$url = new libUrl();
+			$branch = ($_REQUEST['branch'])?$_REQUEST['branch']:"master";
+			return "$ git push ".$GLOBALS['gitserv']['target-dir']." ".$branch;
+		}
 		else if($mode=="clone"){
 			return "$ git clone ".$GLOBALS['gitserv']['target-dir'].$repository;
 		}

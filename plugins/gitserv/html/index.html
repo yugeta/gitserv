@@ -25,6 +25,8 @@
 				<%class:gitserv_common:getAccess(<#request:repository#>)%>
 			<h4>push</h4>
 				<%class:gitserv_common:getAccess(<#request:repository#>,"push")%>
+			<h4>push-local</h4>
+				<%class:gitserv_common:getAccess(<#request:repository#>,"push-local")%>
 			<h4>clone</h4>
 				<%class:gitserv_common:getAccess(<#request:repository#>,"clone")%>
 		</div>
