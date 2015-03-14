@@ -261,6 +261,9 @@ class gitserv_common extends fw_define{
 	function getSource($repository){
 		if(!$_REQUEST['dir']){return;}
 
+		$base_dir = getcwd();
+		chdir($GLOBALS['gitserv']['target-dir'].$repository);
+
 		//dir-check
 		if(preg_match("/\/$/",$_REQUEST['dir'])){return;}
 
@@ -277,6 +280,7 @@ class gitserv_common extends fw_define{
 			$html[] = $res[$i];
 		}
 
+		chdir($base_dir);
 		return join("\n",$html);
 	}
 
